@@ -1,0 +1,73 @@
+package com.edu.testbill.billview.view;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.view.View;
+
+import com.edu.testbill.billview.ElementLayoutParams;
+import com.edu.testbill.billview.IScaleable;
+import com.edu.testbill.billview.ScaleUtil;
+import com.edu.testbill.billview.data.FlashData;
+
+/**
+ * 闪电符视图
+ * 
+ * @author lucher
+ * 
+ */
+public class FlashView extends View implements IScaleable {
+
+	// 对应闪电符的信息
+	private FlashData mData;
+	// 画笔
+	private Paint mPaint;
+	// 划线的粗细
+	private float mStrokeWidth = 1;
+
+	public FlashView(Context context) {
+		super(context);
+		mPaint = new Paint();
+		mPaint.setAntiAlias(true);
+	}
+
+	/**
+	 * 设置闪电符对应数据，并把数据应用到该闪电符上
+	 * 
+	 * @param data
+	 *            数据
+	 * @param scale
+	 *            缩放比例
+	 */
+	public void apply(FlashData data, float scale) {
+		mData = data;
+		postScale(scale, 0);
+	}
+
+	/**
+	 * 设置颜色
+	 * 
+	 * @param color
+	 */
+	public void setColor(int color) {
+		mPaint.setColor(color);
+	}
+
+	@Override
+	public void postScale(float scale, int scaleTimes) {
+		// 布局参数缩放
+		int scaledX = ScaleUtil.getScaledValue(mData.getX(), scale);
+		int scaledY = ScaleUtil.getScaledValue(mData.getY(), scale);
+		int scaledWidth = ScaleUtil.getScaledValue(mData.getWidth(), scale);
+		int scaledHeight = ScaleUtil.getScaledValue(mData.getHeight(), scale);
+		setLayoutParams(new ElementLayoutParams(mData.getType(), scaledX, scaledY, scaledWidth, scaledHeight));
+		// 划线粗细缩放
+		mPaint.setStrokeWidth(mStrokeWidth * scale);
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		canvas.drawLine(0, getHeight(), getWidth(), 0, mPaint);
+	}
+
+}

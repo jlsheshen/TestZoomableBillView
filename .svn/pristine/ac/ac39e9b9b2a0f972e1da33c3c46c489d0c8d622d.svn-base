@@ -1,0 +1,61 @@
+package com.edu.testbill.billview;
+
+import java.io.IOException;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+/**
+ * 缩放工具类
+ * @author lucher
+ *
+ */
+public class ScaleUtil {
+	private static final String TAG = "CrashApplication";
+	/**
+	 * bitmap图片缓存hashmap
+	 */
+	private static HashMap<String, SoftReference<Bitmap>> bitmapCache;
+	
+	/**
+	 * 根据uri获取缓存图片
+	 * 
+	 * @param uri
+	 *            存放在assets里的图片uri
+	 * @param context
+	 * @return
+	 * @throws IOException
+	 */
+	public static Bitmap getCachedBitmap(String uri, Context context) throws IOException {
+		Log.d(TAG, "getCachedBitmap：" + uri);
+		if (bitmapCache == null) {
+			bitmapCache = new HashMap<String, SoftReference<Bitmap>>();
+		}
+		if (bitmapCache.get(uri) == null || bitmapCache.get(uri).get() == null || bitmapCache.get(uri).get().isRecycled()) {
+			Log.i(TAG, "uri:" + uri + " 缓存不存在，从assets里获取出来");
+			BitmapFactory.Options opt = new BitmapFactory.Options();
+			opt.inJustDecodeBounds = true;
+
+
+			bitmapCache.put(uri, new SoftReference<Bitmap>(null));
+		} else {
+			Log.i(TAG, "uri:" + uri + " 缓存存在，直接使用");
+		}
+
+		return bitmapCache.get(uri).get();
+	}
+	
+	/**
+	 * 根据缩放比例对给定值进行缩放
+	 * @param value 待缩放的值
+	 * @param scale 缩放比例
+	 * @return 缩放后的值
+	 */
+	public static int getScaledValue(float value, float scale) {
+		return Math.round(value * scale);
+	}
+}

@@ -1,0 +1,94 @@
+package com.edu.testbill.billview.view;
+
+import com.edu.testbill.billview.ElementLayoutParams;
+import com.edu.testbill.billview.IScaleable;
+import com.edu.testbill.billview.ScaleUtil;
+import com.edu.testbill.billview.data.BlankData;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.view.Gravity;
+import android.widget.EditText;
+
+/**
+ * 单据里对应空的封装,支持缩放
+ * 
+ * @author lucher
+ * 
+ */
+public class BlankEditText extends EditText implements IScaleable {
+
+	// 对应空的信息
+	private BlankData mData;
+	// 字体大小
+	private float mTextSize;
+	// 缩放比重
+	private float mScaleWeight;
+
+	public BlankEditText(Context context) {
+		super(context);
+		init();
+	}
+
+	/**
+	 * 初始化
+	 */
+	private void init() {
+		setPadding(0, 0, 0, 0);
+		setGravity(Gravity.CENTER);
+		setSingleLine();
+		setBackgroundColor(Color.LTGRAY);
+	}
+
+	@Override
+	public void setTextSize(float size) {
+		int selection = getSelectionStart();
+		super.setTextSize(size);
+		setText(getText());// 如果不调用，设置字体大小后，内容可能不会居中
+		setSelection(selection);// 设置字体后恢复上次位置
+	}
+
+	/**
+	 * 设置对应空数据，并把数据应用到该空上
+	 * 
+	 * @param data
+	 *            数据
+	 * @param textSize
+	 *            字体大小
+	 * @param scale
+	 *            缩放比例
+	 * @param scaleWeight
+	 *            缩放比重
+	 */
+	public void apply(BlankData data, float textSize, float scale, float scaleWeight) {
+		mData = data;
+		mTextSize = textSize;
+		mScaleWeight = scaleWeight;
+		setText(data.getAnswer());
+		postScale(scale, 0);
+	}
+
+	/**
+	 * 获取对应空数据
+	 * 
+	 * @return
+	 */
+	public BlankData getData() {
+		return mData;
+	}
+
+	@Override
+	public void postScale(float scale, int scaleTimes) {
+		// 布局参数缩放
+		int scaledX = ScaleUtil.getScaledValue(mData.getX(), scale);
+		int scaledY = ScaleUtil.getScaledValue(mData.getY(), scale);
+		int scaledWidth = ScaleUtil.getScaledValue(mData.getWidth(), scale);
+		int scaledHeight = ScaleUtil.getScaledValue(mData.getHeight(), scale);
+		setLayoutParams(new ElementLayoutParams(mData.getType(), scaledX, scaledY, scaledWidth, scaledHeight));
+		// 字体缩放
+		setTextSize(mTextSize * (float) Math.pow(mScaleWeight, (scaleTimes + 1)));
+		// 宽高缩放-如果不缩放，可能引起内容显示不全
+		setWidth(scaledWidth);
+		setHeight(scaledHeight);
+	}
+}

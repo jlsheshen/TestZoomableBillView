@@ -1,0 +1,40 @@
+package com.edu.testbill.billview.data;
+
+import com.edu.testbill.billview.ElementType;
+
+/**
+ * 闪电符数据
+ * 
+ * @author lucher
+ * 
+ */
+public class FlashData extends BaseElementData {
+	
+	// 是否为用户闪电符
+	private boolean user;
+
+	/**
+	 * 构造
+	 * 
+	 * @param x
+	 *            x坐标
+	 * @param y
+	 *            y坐标
+	 * @param width
+	 *            宽度
+	 * @param height
+	 *            高度
+	 */
+	public FlashData(int x, int y, int width, int height) {
+		super(x, y, width, height, ElementType.TYPE_FLASH);
+	}
+
+	public boolean isUser() {
+		return user;
+	}
+
+	public void setUser(boolean user) {
+		this.user = user;
+	}
+
+}

@@ -1,0 +1,54 @@
+package com.edu.testbill.billview.data;
+
+/**
+ * 对应空的数据
+ * 
+ * @author lucher
+ * 
+ */
+public class BlankData extends BaseElementData {
+
+	// 正确答案
+	private String answer;
+	// 用户答案
+	private String uAnswer;
+
+	public BlankData() {
+
+	}
+
+	/**
+	 * 构造
+	 * 
+	 * @param x
+	 *            x坐标
+	 * @param y
+	 *            y坐标
+	 * @param width
+	 *            宽度
+	 * @param height
+	 *            高度
+	 * @param type
+	 *            类别
+	 */
+	public BlankData(int x, int y, int width, int height, int type) {
+		super(x, y, width, height, type);
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public String getuAnswer() {
+		return uAnswer;
+	}
+
+	public void setuAnswer(String uAnswer) {
+		this.uAnswer = uAnswer;
+	}
+
+}

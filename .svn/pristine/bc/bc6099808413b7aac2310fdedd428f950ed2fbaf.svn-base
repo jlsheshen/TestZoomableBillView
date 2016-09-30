@@ -1,0 +1,62 @@
+package com.edu.testbill.billview;
+
+import java.util.List;
+
+import android.graphics.Bitmap;
+
+import com.edu.testbill.billview.data.BaseElementData;
+
+/**
+ * 单据模板,注：模板中使用的图片不能存放在drawable下，否则可能会引起界面混乱
+ * 
+ * @author lucher
+ * 
+ */
+public class BillTemplate {
+
+	// 模板id
+	private int id;
+	// 底图图片
+	private Bitmap bitmap;
+	// 模板名称
+	private String name;
+	// 对应的所有空
+	private List<BaseElementData> elementDatas;
+
+	public BillTemplate() {
+
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Bitmap getBitmap() {
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
+	}
+
+	public List<BaseElementData> getElementDatas() {
+		return elementDatas;
+	}
+
+	public void setElementDatas(List<BaseElementData> elementDatas) {
+		this.elementDatas = elementDatas;
+	}
+
+}

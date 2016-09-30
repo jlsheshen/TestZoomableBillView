@@ -1,0 +1,151 @@
+package com.edu.testbill;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.edu.testbill.billview.BillTemplate;
+import com.edu.testbill.billview.BillZoomListener;
+import com.edu.testbill.billview.ElementType;
+import com.edu.testbill.billview.SignViewListener;
+import com.edu.testbill.billview.data.BaseElementData;
+import com.edu.testbill.billview.data.BlankData;
+import com.edu.testbill.billview.data.FlashData;
+import com.edu.testbill.billview.data.SignData;
+import com.edu.testbill.billview.view.SignView;
+import com.edu.testbill.billview.view.ZoomableBillView;
+import com.edu.zoomcontrol.R;
+
+/**
+ * 
+ * {@link}ZoomableBillView 使用示例
+ * 
+ * @author lucher
+ * 
+ */
+public class MainActivity extends Activity implements BillZoomListener, SignViewListener {
+
+	// 支持缩放，自由滚动，智能滚动等功能的单据视图
+	private ZoomableBillView billView;
+	// 缩放按钮
+	private Button btnZoomIn, btnZoomOut;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		try {
+			init();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 初始化
+	 * 
+	 * @throws IOException
+	 */
+	private void init() throws IOException {
+		btnZoomIn = (Button) findViewById(R.id.btnZoomIn);
+		btnZoomOut = (Button) findViewById(R.id.btnZoomOut);
+
+		billView = (ZoomableBillView) findViewById(R.id.billView);
+		BillTemplate template = new BillTemplate();
+		List<BaseElementData> elements = new ArrayList<BaseElementData>();
+		// 加入两个测试空
+		BlankData blank1 = new BlankData(120, 161, 156, 43, ElementType.TYPE_NORMAL);
+		blank1.setAnswer("test1");
+		elements.add(blank1);
+		BlankData blank2 = new BlankData(530, 251, 104, 43, ElementType.TYPE_NORMAL);
+		blank2.setAnswer("test2");
+		elements.add(blank2);
+		// 加入印章
+		SignData sign = new SignData(723, 323);
+		sign.setBitmap(BitmapFactory.decodeStream(getAssets().open("sign.png")));
+		elements.add(sign);
+		// 加入闪电符
+		FlashData flash = new FlashData(741, 251, 108, 44);
+		elements.add(flash);
+
+		template.setElementDatas(elements);
+		template.setBitmap(BitmapFactory.decodeStream(getAssets().open("chanpinchukudan.png")));
+
+		billView.setBillTempate(template);
+		billView.setBillZoomListener(this);
+		billView.setSignListener(this);
+	}
+
+	public void onClick(View view) throws IOException {
+		switch (view.getId()) {
+		case R.id.btnZoomIn:
+			billView.zoomIn();
+			break;
+
+		case R.id.btnZoomOut:
+			billView.zoomOut();
+			break;
+
+		case R.id.btnSign:
+			SignData sign = new SignData();
+			sign.setBitmap(BitmapFactory.decodeStream(getAssets().open("sign2.png")));
+			boolean result = billView.addSignView(sign);
+			if (!result) {
+				// 添加失败处理
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onZoomInit(boolean zoomInEnable, boolean zoomOutEnable) {
+		btnZoomIn.setEnabled(zoomInEnable);
+		btnZoomOut.setEnabled(zoomOutEnable);
+	}
+
+	@Override
+	public void onZoomInStart(int currentScaleTimes) {
+	}
+
+	@Override
+	public void onZoomInEnd(int currentScaleTimes, boolean zoomInEnable, boolean zoomOutEnable) {
+		btnZoomIn.setEnabled(zoomInEnable);
+		btnZoomOut.setEnabled(zoomOutEnable);
+	}
+
+	@Override
+	public void onZoomOutStart(int currentScaleTimes) {
+	}
+
+	@Override
+	public void onZoomOutEnd(int currentScaleTimes, boolean zoomInEnable, boolean zoomOutEnable) {
+		btnZoomIn.setEnabled(zoomInEnable);
+		btnZoomOut.setEnabled(zoomOutEnable);
+	}
+
+	@Override
+	public void onDragStart(SignView view) {
+		ToastUtil.showToast(this, "开始盖章了");
+	}
+
+	@Override
+	public void onDragEnd(SignView view) {
+		ToastUtil.showToast(this, "盖章结束了,真聪明");
+	}
+
+	@Override
+	public void onDragHint(SignView view, String msg) {
+		ToastUtil.showToast(this, msg);
+	}
+
+}
